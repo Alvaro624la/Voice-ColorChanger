@@ -5,7 +5,6 @@
   "type": "module",
   "homepage": "github.com/Alvaro624la/Voice-ColorChanger",
   "scripts": {
-    "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
     "dev": "vite",
     "build": "vite build",
