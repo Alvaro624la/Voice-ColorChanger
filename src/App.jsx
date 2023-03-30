@@ -158,31 +158,33 @@ function App() {
   recognitionVoice.lang = "en-US";
 
   // ------ variables ------
+  // console.log(localStorage.getItem('bgColor'));
   const input = useRef();
-  const [title, setTitle] = useState('Say or write any color');
-  const [bgColor, setBgColor] = useState();
+  const [title, setTitle] = useState('Say or write any color 💡');
+  const [hexBgColor, setHexBgColor] = useState();
+  const [titleColor, setTitleColor] = useState('#000');
   const notFoundMessaje = [
     'Not color found 🤷‍♂️',
     'Type/say any color name 🎨',
     'Try it with the red 🎈',
-    'Try to say blue 🔊',
-    'Write anything that includes a color name 📚'
+    'Try to say Silver 🔊',
+    'Write anything that includes a color name 📚',
+    'Have you tried Navy color? 🌊',
+    'Say tomato 🍅'
   ]
   const [notFoundMessajeIndex, setNotFoundMessajeIndex] = useState(0);
 
   // ------ functions ------
-    const rec = () => {
-      recognitionVoice.start();
-      setTitle('Recording your voice...');
-    }
-    recognitionVoice.onresult = (e) => {
-      recognitionVoice.abort();
-      console.log(e.results[0][0].transcript);
-      input.current.value = e.results[0][0].transcript;
-      change();
-    }
+  const rec = () => {
+    recognitionVoice.start();
+    setTitle('Recording your voice... 🎤');
+  }
+  recognitionVoice.onresult = (e) => {
+    recognitionVoice.abort();
+    input.current.value = e.results[0][0].transcript;
+    change();
+  }
   
-
   const change = () => {
     recognitionVoice.abort();
     const inputContent = input.current.value.toLowerCase().split(' ');
@@ -192,7 +194,18 @@ function App() {
     let palabrasCoincidentes = [];
     for(let i = 0; i < inputContentProcessed.length; i++){
       colorNames.map((color) => {
-        if(inputContentProcessed[i].includes(color)){
+        // En realidad .includes sobra ya que compruebo si la palabra es igual, teniendo en cuenta todo, hasta los espacios. Con .include veo si está incluida, tanto red como redded por ejemplo. Lo que no es válido y he tenido que añadir el ===. Yo busco un color, no una palabra mal escrita que contenga ese color:
+        // Ejemplo de error(.includes): My white son has a greenhouse --> green 
+        // Ejemplo OK(===): My white son has a greenhouse --> white
+        // ---------->      if(inputContentProcessed[i].includes(color) && inputContentProcessed[i] === color)     <---------------
+
+        //////////////////////////////////////////////////////////////////// FALTA ////////////////////////////////////////////////////////////////////////
+        // if (nameBgColor === color){                      ///////////////////////////////////////////////////////////////////////////////////////////////
+        //   setTitle(`You already on ${color} color`);     ///////////////////////////////////////////////////////////////////////////////////////////////
+        // }                                                ///////////////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////// FALTA ////////////////////////////////////////////////////////////////////////
+        
+        if(inputContentProcessed[i] === color){ 
           palabrasCoincidentes.push(color);
         } else {
           notFoundMessajeIndex === notFoundMessaje.length - 1 ? setNotFoundMessajeIndex(0) : setNotFoundMessajeIndex(notFoundMessajeIndex + 1);
@@ -201,20 +214,23 @@ function App() {
       });
     };
     const palabraElegida = palabrasCoincidentes[palabrasCoincidentes.length-1];
-    console.log(palabraElegida);
-    setTitle(`The ${palabraElegida.toLowerCase()} color . ¡Good choice!`)
-    setBgColor(colorsObj[palabraElegida]);
+    if(palabraElegida) setTitle(`The ${palabraElegida.toLowerCase()} color. ¡Good choice! 😃`);
+    setHexBgColor(colorsObj[palabraElegida]);
     input.current.value = '';
+    // Probando con localStorage, pero es tonteria si lo puedo resumir en una linea de código como la de debajo:
+    // window.localStorage.setItem('bgColor', palabraElegida);
+    // localStorage.getItem('bgColor') === 'Black' || localStorage.getItem('bgColor') === 'Navy' ? setTitleColor('#fff') : setTitleColor('#000');
+    palabraElegida === 'Black' || palabraElegida === 'Navy' ? setTitleColor('#fff') : setTitleColor('#000');
   }
 
   return (
     <>
-    <div className="app" style={{backgroundColor: bgColor}}>
+    <div className="app" style={{backgroundColor: hexBgColor}}>
       <div className="app__write-cont">
-        <input ref={input} className="app__write-cont__input"></input>
+        <input ref={input} className="app__write-cont__input" onKeyDown={e => {if(e.code === 'Enter')change()}}></input>
         <button className="app__write-cont__btn-ok" onClick={change}>Change</button>
       </div>
-      <h1 className="app__title">{title}</h1>
+      <h1 className="app__title" style={{color: titleColor}}>{title}</h1>
       <button className="btn-rec" onClick={rec}>REC</button>
     </div>
     </>

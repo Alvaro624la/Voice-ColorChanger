@@ -29,6 +29,10 @@ body{
         animation: random-bg-color 5s infinite ease-in-out;
       }
     }
+    &__input{
+      overflow-y: hidden;
+      overflow-x: scroll;
+    }
     &__btn-ok{
       cursor: pointer;
       border-radius: 0 10px 10px 0;
@@ -45,6 +49,7 @@ body{
   }
 
   &__title{
+    font-size: 2em;
     color: black;
     font-family: Helvetica, Arial;
   }
@@ -89,7 +94,45 @@ body{
   70%{background-color: rgb(23, 255, 2);}
   100%{background-color: rgb(255, 255, 255);}
 }
-
+@media (max-width: 700px){
+  .app{  
+    &__title{
+      padding: 1em 0;
+      font-size: 1em;
+    }
+  }
+  .btn-rec{
+    width: 150px;
+    height: 150px;
+  }
+}
+@media (max-width: 326px){
+  .app{    
+    &__write-cont{
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-items: center;
+  
+      &__input, &__btn-ok{
+        padding: 1em;
+        border-radius: 10px;
+        font-size: 1em;
+        width: 60vw;
+      }
+      &__btn-ok{
+        border-radius: 10px;
+        margin-top: 0.25em;
+        width: 100px
+      }
+      // opcion 2
+      // &__btn-ok{
+      //   margin-top: 0;
+      //   border-radius: 0 0 10px 10px;
+      //   width: 100px
+      // }
+    }
+  }
+}
 
 
 // -------- Alternativa web troll ---------
