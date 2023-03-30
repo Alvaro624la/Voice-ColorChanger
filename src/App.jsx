@@ -161,6 +161,8 @@ function App() {
   // console.log(localStorage.getItem('bgColor'));
   const input = useRef();
   const [title, setTitle] = useState('Say or write any color 💡');
+  const [transcription, setTranscription] = useState('Not recorded 🎙️. Try again or write it above ⬆️');
+  const [opacity, setOpacity] = useState(0);
   const [hexBgColor, setHexBgColor] = useState();
   const [titleColor, setTitleColor] = useState('#000');
   const notFoundMessaje = [
@@ -177,10 +179,13 @@ function App() {
   // ------ functions ------
   const rec = () => {
     recognitionVoice.start();
+    setOpacity(0);
     setTitle('Recording your voice... 🎤');
   }
   recognitionVoice.onresult = (e) => {
     recognitionVoice.abort();
+    setOpacity(1);
+    setTranscription(`- ${e.results[0][0].transcript.charAt(0).toUpperCase() + e.results[0][0].transcript.slice(1)}`);
     input.current.value = e.results[0][0].transcript;
     change();
   }
@@ -207,6 +212,7 @@ function App() {
         
         if(inputContentProcessed[i] === color){ 
           palabrasCoincidentes.push(color);
+          input.current.value = '';
         } else {
           notFoundMessajeIndex === notFoundMessaje.length - 1 ? setNotFoundMessajeIndex(0) : setNotFoundMessajeIndex(notFoundMessajeIndex + 1);
           setTitle(notFoundMessaje[notFoundMessajeIndex]);
@@ -216,7 +222,6 @@ function App() {
     const palabraElegida = palabrasCoincidentes[palabrasCoincidentes.length-1];
     if(palabraElegida) setTitle(`The ${palabraElegida.toLowerCase()} color. ¡Good choice! 😃`);
     setHexBgColor(colorsObj[palabraElegida]);
-    input.current.value = '';
     // Probando con localStorage, pero es tonteria si lo puedo resumir en una linea de código como la de debajo:
     // window.localStorage.setItem('bgColor', palabraElegida);
     // localStorage.getItem('bgColor') === 'Black' || localStorage.getItem('bgColor') === 'Navy' ? setTitleColor('#fff') : setTitleColor('#000');
@@ -231,6 +236,7 @@ function App() {
         <button className="app__write-cont__btn-ok" onClick={change}>Change</button>
       </div>
       <h1 className="app__title" style={{color: titleColor}}>{title}</h1>
+      <h1 className="app__recorded-message" style={{color: titleColor, opacity: opacity}}>{transcription}</h1>
       <button className="btn-rec" onClick={rec}>REC</button>
     </div>
     </>

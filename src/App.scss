@@ -38,18 +38,21 @@ body{
       border-radius: 0 10px 10px 0;
       animation: random-bg-color 5s infinite ease-in-out;
 
-      &:hover{
-        animation: hover 0.25s infinite ease-in-out;
-      }
       &:active{
         animation: none;
-        background-color: rgb(0, 255, 0);
+        background-color: rgb(0, 225, 0);
+        transform: scale(0.95);
       }
     }
   }
 
   &__title{
     font-size: 2em;
+    color: black;
+    font-family: Helvetica, Arial;
+  }
+  &__recorded-message{
+    font-size: 0.6em;
     color: black;
     font-family: Helvetica, Arial;
   }
@@ -68,24 +71,49 @@ body{
   border: 5px solid #fff;
   animation: random-bg-color 6s infinite ease-in-out reverse;
   animation-delay: 1000ms;
-  
-  &:hover{
-    transform: scale(1.05);
-    animation: hover 0.25s infinite ease-in-out;
-    transition: all 0.25s;
-  }
+
   &:active{
     animation: none;
-    background-color: rgb(0, 255, 0);
+    background-color: rgb(0, 225, 0);
     transform: scale(0.95);
+    transition: all 0.1s;
+  }
+}
+
+//laptop
+@media only screen and (min-width: 768px){
+  .app{
+    &__write-cont{
+      &__btn-ok{  
+        &:hover{
+          animation: hover 0.25s infinite ease-in-out;
+        }
+        &:active{
+          animation: none;
+          background-color: rgb(0, 255, 0);
+        }
+      }
+    }
+  }
+  .btn-rec{    
+    &:hover{
+      transform: scale(1.05);
+      animation: hover 0.25s infinite ease-in-out;
+      transition: all 0.25s;
+    }
+    &:active{
+      animation: none;
+      background-color: rgb(0, 255, 0);
+      transform: scale(0.95);
+    }
   }
 }
 @keyframes random-bg-color {
   0%{background-color: rgb(255, 0, 0);}
-  20%{background-color: rgb(255, 255, 0);}
+  15%{background-color: rgb(255, 255, 0);}
   40%{background-color: rgb(0, 255, 0);}
   60%{background-color: rgb(0, 255, 255);}
-  80%{background-color: rgb(255, 0, 255);}
+  85%{background-color: rgb(255, 0, 255);}
   100%{background-color: rgb(255, 0, 0);}
 }
 @keyframes hover {
@@ -94,6 +122,7 @@ body{
   70%{background-color: rgb(23, 255, 2);}
   100%{background-color: rgb(255, 255, 255);}
 }
+
 @media (max-width: 700px){
   .app{  
     &__title{
@@ -106,6 +135,8 @@ body{
     height: 150px;
   }
 }
+
+//mobile
 @media (max-width: 326px){
   .app{    
     &__write-cont{
