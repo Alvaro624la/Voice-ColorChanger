@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react'
-// import useEffect from 'react'
 import './App.scss'
 
 function App() {
@@ -162,41 +161,50 @@ function App() {
   const input = useRef();
   const [title, setTitle] = useState('Say or write any color');
   const [bgColor, setBgColor] = useState();
+  const notFoundMessaje = [
+    'Not color found 🤷‍♂️',
+    'Type/say any color name 🎨',
+    'Try it with the red 🎈',
+    'Try to say blue 🔊',
+    'Write anything that includes a color name 📚'
+  ]
+  const [notFoundMessajeIndex, setNotFoundMessajeIndex] = useState(0);
 
   // ------ functions ------
-  // useEffect(()=>{
     const rec = () => {
       recognitionVoice.start();
-      setTitle('Grabando tu puta voz...');
+      setTitle('Recording your voice...');
     }
     recognitionVoice.onresult = (e) => {
-      recognitionVoice.stop();
+      recognitionVoice.abort();
       console.log(e.results[0][0].transcript);
       input.current.value = e.results[0][0].transcript;
       change();
     }
-  // },[]);
-  
   
 
   const change = () => {
-    const contenidoInput = input.current.value.toLowerCase();
-    const colorNames = Object.keys(colorsObj).map(string => string.toLowerCase())
+    recognitionVoice.abort();
+    const inputContent = input.current.value.toLowerCase().split(' ');
+    const inputContentProcessed = inputContent.map(word => word.charAt(0).toUpperCase() + word.slice(1));
+    const colorNames = Object.keys(colorsObj)
 
-    if(contenidoInput === ''){
-      setTitle('¡Escribe algo, gilipollas!');
-    } 
-    else if (!colorNames.includes(contenidoInput)){
-      setTitle('¡Pero escribelo bien, coño!');
-    }
-    else if (colorNames.includes(contenidoInput)){
-      const includedWord = contenidoInput.charAt(0).toUpperCase() + contenidoInput.slice(1);
-      setTitle(`El color ${includedWord}. ¡Buena elección!`)
-      setBgColor(colorsObj[includedWord]);
-      input.current.value = '';
-    }
-
-    
+    let palabrasCoincidentes = [];
+    for(let i = 0; i < inputContentProcessed.length; i++){
+      colorNames.map((color) => {
+        if(inputContentProcessed[i].includes(color)){
+          palabrasCoincidentes.push(color);
+        } else {
+          notFoundMessajeIndex === notFoundMessaje.length - 1 ? setNotFoundMessajeIndex(0) : setNotFoundMessajeIndex(notFoundMessajeIndex + 1);
+          setTitle(notFoundMessaje[notFoundMessajeIndex]);
+        };
+      });
+    };
+    const palabraElegida = palabrasCoincidentes[palabrasCoincidentes.length-1];
+    console.log(palabraElegida);
+    setTitle(`The ${palabraElegida.toLowerCase()} color . ¡Good choice!`)
+    setBgColor(colorsObj[palabraElegida]);
+    input.current.value = '';
   }
 
   return (
@@ -214,9 +222,6 @@ function App() {
 }
 
 export default App
-
-// Ideas:
-  // - Detectar si el color está en una frase entera, no solo poniendo el color solamente
 
   {/* Alternativa web troll */}
   //-----------------------------------------------------------------------------------------------------------------
